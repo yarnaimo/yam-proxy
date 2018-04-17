@@ -2,7 +2,7 @@ version: '3'
 
 services:
   nginx-proxy:
-    image: nginx
+    image: nginx:alpine
     container_name: nginx-proxy
     ports:
       - "80:80"
@@ -12,6 +12,8 @@ services:
       - nginx-vhost:/etc/nginx/vhost.d
       - nginx-html:/usr/share/nginx/html
       - nginx-ssl:/etc/nginx/certs:ro
+    environment:
+      ENABLE_IPV6: "true"
     labels:
       com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     networks:
@@ -34,7 +36,7 @@ services:
       - nginx-proxy
 
   nginx-ssl:
-    image: jrcs/letsencrypt-nginx-proxy-companion
+    image: jrcs/letsencrypt-nginx-proxy-companion:v1.8.1
     container_name: nginx-ssl
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
