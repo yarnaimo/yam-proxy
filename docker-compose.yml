@@ -8,10 +8,8 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - nginx-conf:/etc/nginx/conf.d
-      - nginx-vhost:/etc/nginx/vhost.d
+      - nginx:/etc/nginx
       - nginx-html:/usr/share/nginx/html
-      - nginx-ssl:/etc/nginx/certs:ro
     environment:
       ENABLE_IPV6: "true"
     labels:
@@ -25,11 +23,9 @@ services:
     command: -notify-sighup nginx-proxy -wait 5s:30s -watch /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - nginx-conf:/etc/nginx/conf.d
-      - nginx-vhost:/etc/nginx/vhost.d
+      - nginx:/etc/nginx
       - nginx-html:/usr/share/nginx/html
       - nginx-gen-tmpl:/etc/docker-gen/templates:rw
-      - nginx-ssl:/etc/nginx/certs:ro
     links:
       - nginx-proxy
     networks:
@@ -40,11 +36,9 @@ services:
     container_name: nginx-ssl
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - nginx-conf:/etc/nginx/conf.d
-      - nginx-vhost:/etc/nginx/vhost.d
+      - nginx:/etc/nginx
       - nginx-html:/usr/share/nginx/html
       - nginx-gen-tmpl:/etc/docker-gen/templates:ro
-      - nginx-ssl:/etc/nginx/certs:rw
     environment:
       - ACME_CA_URI
       - "NGINX_DOCKER_GEN_CONTAINER=nginx-gen"
@@ -55,11 +49,9 @@ services:
       - nginx-proxy
 
 volumes:
-  nginx-conf:
-  nginx-vhost:
+  nginx:
   nginx-html:
   nginx-gen-tmpl:
-  nginx-ssl:
 
 networks:
   nginx-proxy:
